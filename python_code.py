@@ -110,12 +110,21 @@ print("vocab size: {:d}".format(len(vocab)))
 word2idx = {w: i for i, w in enumerate(vocab)}
 idx2word = {i: w for w, i in word2idx.items()}
 
+# --- Configuration block for seq_length and batch_size ---
+config = "small"  # Change to "large" for the larger configuration
+
+if config == "small":
+    seq_length = 50   # Smaller sequence length (50 words per sequence)
+    batch_size = 32   # Smaller batch size (32 sequences per batch)
+else:
+    seq_length = 200  # Larger sequence length (200 words per sequence)
+    batch_size = 128  # Larger batch size (128 sequences per batch)
+
 # Convert words into integers
 words_as_ints = np.array([word2idx[w] for w in words])
 data = tf.data.Dataset.from_tensor_slices(words_as_ints)
 
-# Define sequence length (now the number of words per input sequence)
-seq_length = 100
+# Group the data into sequences of length (seq_length + 1) and map them into input/output pairs.
 sequences = data.batch(seq_length + 1, drop_remainder=True)
 sequences = sequences.map(split_train_labels)
 
@@ -124,8 +133,7 @@ for input_seq, output_seq in sequences.take(1):
     print("input: [{}]".format(" ".join([idx2word[i] for i in input_seq.numpy()])))
     print("output: [{}]".format(" ".join([idx2word[i] for i in output_seq.numpy()])))
 
-# Set up for training
-batch_size = 64
+# Set up the dataset for training using the chosen batch_size.
 steps_per_epoch = len(words) // seq_length // batch_size
 dataset = sequences.shuffle(10000).batch(batch_size, drop_remainder=True)
 print(dataset)
