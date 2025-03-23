@@ -8,7 +8,7 @@ DATA_DIR = "./data"
 CHECKPOINT_DIR = os.path.join(DATA_DIR, "checkpoints")
 LOG_DIR = os.path.join(DATA_DIR, "logs")
 
-
+# comment
 def clean_logs():
     shutil.rmtree(CHECKPOINT_DIR, ignore_errors=True)
     shutil.rmtree(LOG_DIR, ignore_errors=True)
