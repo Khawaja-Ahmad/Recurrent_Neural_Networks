@@ -14,18 +14,29 @@ def clean_logs():
     shutil.rmtree(LOG_DIR, ignore_errors=True)
 
 
-# Modified for word-level vocabulary:
-# Instead of extending the text character by character, we split the text into words.
 def download_and_read(urls):
     words = []  # Will store words instead of individual characters
     for i, url in enumerate(urls):
-        p = tf.keras.utils.get_file("ex1-{:d}.txt".format(i), url, cache_dir=".")
+        # Explanation:
+        # tf.keras.utils.get_file() is a utility that downloads a file from the given URL,
+        # caches it locally, and returns the local file path. This is useful for ensuring
+        # that files are downloaded only once.
+        #
+        # For this example, we assume the files are already downloaded locally (e.g., "ex1-0.txt" and "ex1-1.txt")
+        # so we comment out the download line to save time and directly read from the local file.
+        #
+        # Original code:
+        # p = tf.keras.utils.get_file("ex1-{:d}.txt".format(i), url, cache_dir=".")
+        
+        p = "ex1-{:d}.txt".format(i)  # Use the local file directly
+
+        # Open and read the file
         text = open(p, mode="r", encoding="utf-8").read()
-        # Remove byte order mark and newlines; replace extra spaces with a single space
+        # Clean the text by removing byte order mark and newlines, and condensing spaces
         text = text.replace("\ufeff", "")
         text = text.replace('\n', ' ')
         text = re.sub(r'\s+', " ", text)
-        # Split text into words based on whitespace and add to the list
+        # Split the text into words
         word_list = text.split()
         words.extend(word_list)
     return words
